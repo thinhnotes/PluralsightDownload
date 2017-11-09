@@ -64,4 +64,12 @@ namespace Pluralsight_Download.Entity
         Beginner,
         Advanced
     }
+
+    public class LinkDownload
+    {
+        public string CDN { get; set; }
+        public string Source { get; set; }
+        public int Rank { get; set; }
+        public string Url { get; set; }
+    }
 }

@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Pluralsight_Download.Entity;
 using THttpWebRequest;
 using THttpWebRequest.Utility;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PluralSight_Download
 {
@@ -32,29 +37,71 @@ namespace PluralSight_Download
         public string DownLoad(string urldownload)
         {
             var uri = new Uri(urldownload);
-            string url = "http://app.pluralsight.com/training/Player/ViewClip";
+            string url = "https://app.pluralsight.com/video/clips/viewclip";
+            var moduleName = HttpUtility.ParseQueryString(uri.Query).Get("name");
             object data = new
             {
-                a = HttpUtility.ParseQueryString(uri.Query).Get("author"),
-                m = HttpUtility.ParseQueryString(uri.Query).Get("name"),
-                course = HttpUtility.ParseQueryString(uri.Query).Get("course"),
-                cn = HttpUtility.ParseQueryString(uri.Query).Get("clip"),
-                mt = ConfigValue.FileType,
-                q = ConfigValue.Quality,
-                cap = ConfigValue.Cap,
-                lc = ConfigValue.Localize
+                author = HttpUtility.ParseQueryString(uri.Query).Get("author"),
+                moduleName = moduleName,
+                courseName = HttpUtility.ParseQueryString(uri.Query).Get("course"),
+                clipIndex = int.Parse(HttpUtility.ParseQueryString(uri.Query).Get("clip") ?? "0"),
+                mediaType = ConfigValue.FileType,
+                quality = ConfigValue.Quality,
+                includeCaptions = ConfigValue.Cap,
+                locale = ConfigValue.Localize
             };
-            return Post(url, data.ToJsonString(), TypeRequest.Json);
+            Referer = urldownload;
+            var downLoad = Post(url, data.ToJsonString(), TypeRequest.Json);
+            var jObject = JsonConvert.DeserializeObject<JObject>(downLoad);
+            if(jObject!=null && jObject["urls"]!=null)
+            {
+                var urls = JsonConvert.DeserializeObject<List<LinkDownload>>(jObject["urls"].ToString());
+                return urls.FirstOrDefault()?.Url;
+            }
+            throw new Exception($"Not find any url download for module {moduleName}");
         }
 
         public void DownLoadFile(string url, string path, string fileName)
         {
             using (var webClient = new WebClient())
             {
+                var fileSizeFromUrl = GetFileSizeFromUrl(webClient, url);
+
                 CreateIfNotExitDirectory(path);
                 var combine = PathCombine(path, CleanFileName(fileName));
-                webClient.DownloadFile(new Uri(url), combine);
+
+                if (!CheckFileIsDonloaded(combine, fileSizeFromUrl, url))
+                {
+                    var progress = new ProgressBar();
+
+                    webClient.DownloadProgressChanged += (sender, args) =>
+                    {
+                        progress.Report((double)args.BytesReceived / args.TotalBytesToReceive);
+                    };
+
+                    webClient.DownloadFileCompleted += (sender, args) =>
+                    {
+                        progress.Dispose();
+                    };
+
+                    webClient.DownloadFileTaskAsync(new Uri(url), combine).Wait();
+                }
             }
+        }
+
+        public bool CheckFileIsDonloaded(string fileLocation, Int64 bytesTotal, string urlFile)
+        {
+            if (!File.Exists(fileLocation)) return false;
+            
+            if (new FileInfo(fileLocation).Length == bytesTotal)
+                return true;
+            return false;
+        }
+
+        public Int64 GetFileSizeFromUrl(WebClient wc, string urlFile)
+        {
+            wc.OpenRead(urlFile);
+            return Convert.ToInt64(wc.ResponseHeaders["Content-Length"]);
         }
 
         public void DownloadAll(Course course, string path)
