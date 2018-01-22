@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Pluralsight_Download.Entity;
 using THttpWebRequest.Utility;
 
@@ -6,27 +10,130 @@ namespace PluralSight_Download
 {
     class Program
     {
+        private static readonly string commandCharacter = "--";
+        private static readonly string defaultFolderDownload = "Download";
+        public static readonly Dictionary<string, string> Command = new Dictionary<string, string>();
+
         static void Main(string[] args)
         {
-            if (args.Length == 3 || args.Length == 4)
+            if (DisplayConsole(Environment.GetCommandLineArgs().ToList(), out DownloadParameter downloadParameter) == 0)
             {
-                ConfigValue.UserName = args[0];
-                ConfigValue.Password = args[1];
                 var pluralSightClient = new PluralSightClient();
-                var hasLogin = pluralSightClient.Login(ConfigValue.UserName, ConfigValue.Password);
+                var hasLogin = pluralSightClient.Login(downloadParameter.UserName, downloadParameter.Password);
                 if (!hasLogin)
-                    throw new Exception("The User Name Or Password Invalid!");
-                var s = pluralSightClient.GetJson(args[2]);
+                    Console.WriteLine("The User Name Or Password Invalid!");
+                var s = pluralSightClient.GetJson(downloadParameter.Link);
                 Course deserializeJsonAs = s.DeserializeJsonAs<Course>();
 
-                string downloadFolder = "Download";
-                if (args.Length == 4)
-                {
-                    downloadFolder = args[3];
-                }
-                pluralSightClient.DownloadAll(deserializeJsonAs, downloadFolder);
+                pluralSightClient.DownloadAll(deserializeJsonAs, downloadParameter.DownloadFolder);
+                Console.WriteLine("Download Complete!");
                 Console.Beep();
             }
         }
+
+        public static DownloadParameter ParseDownloadParameter(List<string> strings)
+        {
+            if (strings.Any(x => x.StartsWith(commandCharacter)))
+            {
+                Dictionary<string, string> commands = new Dictionary<string, string>();
+                for (int i = 0; i < strings.Count; i++)
+                {
+                    if (strings[i].StartsWith(commandCharacter) && !string.IsNullOrWhiteSpace(strings[i + 1]) && !strings[i + 1].StartsWith(commandCharacter))
+                    {
+                        commands.Add(strings[i], strings[i + 1]);
+                    }
+                }
+                return ParseDownloadParameterCommandList(commands);
+            }
+            else
+                return ParseDownloadParameterFromNonamlize(strings);
+        }
+
+        public static DownloadParameter ParseDownloadParameterFromNonamlize(List<string> strings)
+        {
+            var result = new DownloadParameter()
+            {
+                DownloadFolder = defaultFolderDownload
+            };
+            if (strings.Count >= 4)
+            {
+                result.UserName = strings[1];
+                result.Password = strings[2];
+                result.Link = strings[3];
+            }
+            if (strings.Count >= 5)
+            {
+                result.DownloadFolder = strings[4];
+            }
+            return result;
+        }
+
+        public static DownloadParameter ParseDownloadParameterCommandList(Dictionary<string, string> command)
+        {
+            var result = new DownloadParameter()
+            {
+                DownloadFolder = defaultFolderDownload
+            };
+
+            foreach (var commandKey in command.Keys)
+            {
+                var commandProperty = typeof(DownloadParameter).GetProperties().FirstOrDefault(p => p.Name.Equals(commandKey, StringComparison.OrdinalIgnoreCase));
+                if (commandProperty != null)
+                {
+                    commandProperty.SetValue(result, command[commandKey]);
+                }
+            }
+
+            return result;
+        }
+
+        public static int DisplayConsole(List<string> commandlinestring, out DownloadParameter parameter)
+        {
+            if (commandlinestring.Count == 1 || commandlinestring.Any(x => x.StartsWith(commandCharacter + "help")))
+            {
+                parameter = new DownloadParameter();
+                DisplayHelpConsole();
+                return -1;
+            }
+            parameter = ParseDownloadParameter(commandlinestring);
+            if (string.IsNullOrWhiteSpace(parameter.UserName))
+            {
+                parameter = new DownloadParameter();
+                Console.WriteLine("The UserName can not be empy!");
+                return -1;
+            }
+            if (string.IsNullOrWhiteSpace(parameter.Password))
+            {
+                parameter = new DownloadParameter();
+                Console.WriteLine("The PassWord can not be empy!");
+                return -1;
+            }
+            if (string.IsNullOrWhiteSpace(parameter.Link))
+            {
+                parameter = new DownloadParameter();
+                Console.WriteLine("The Link Download can not be empy!");
+                return -1;
+            }
+            return 0;
+        }
+
+        public static void DisplayHelpConsole()
+        {
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            string name = Path.GetFileName(codeBase);
+            Console.WriteLine($"you can used download by order {name} [Username] [Password] [Link] [DownloadFolder]");
+            Console.WriteLine("--UserName [UserName] for set user name param [required]");
+            Console.WriteLine("--PassWord [PassWord] for set user name param [required]");
+            Console.WriteLine("--Link [Link] for set user name param [required]");
+            Console.WriteLine("--DownloadFolder [DownloadFolder] for set user name param [optional]");
+            Console.WriteLine("--Help");
+        }
+    }
+    public class DownloadParameter
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Link { get; set; }
+        public string DownloadFolder { get; set; }
     }
 }
