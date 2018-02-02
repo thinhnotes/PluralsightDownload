@@ -27,8 +27,6 @@ namespace PluralSight_Download
             var data = $"Username={HttpUtility.HtmlEncode(user)}&Password={HttpUtility.HtmlEncode(pass)}";
             Referer = url;
             Post(url, data);
-            Get(
-                "https://app.pluralsight.com/data/signin/token?redirectTo=https%3a%2f%2fapp.pluralsight.com%2flibrary%2f");
 
             return CookieCollection["PsJwt-production"] != null;
         }

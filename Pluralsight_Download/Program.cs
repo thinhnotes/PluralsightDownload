@@ -22,8 +22,8 @@ namespace PluralSight_Download
                 var hasLogin = pluralSightClient.Login(downloadParameter.UserName, downloadParameter.Password);
                 if (!hasLogin)
                     Console.WriteLine("The User Name Or Password Invalid!");
-                var s = pluralSightClient.GetJson(downloadParameter.Link);
-                Course deserializeJsonAs = s.DeserializeJsonAs<Course>();
+                var jsonCourse = pluralSightClient.GetJson(downloadParameter.Link);
+                Course deserializeJsonAs = jsonCourse.DeserializeJsonAs<Course>();
 
                 pluralSightClient.DownloadAll(deserializeJsonAs, downloadParameter.DownloadFolder);
                 Console.WriteLine("Download Complete!");
@@ -40,7 +40,7 @@ namespace PluralSight_Download
                 {
                     if (strings[i].StartsWith(commandCharacter) && !string.IsNullOrWhiteSpace(strings[i + 1]) && !strings[i + 1].StartsWith(commandCharacter))
                     {
-                        commands.Add(strings[i], strings[i + 1]);
+                        commands.Add(strings[i].Replace(commandCharacter, ""), strings[i + 1]);
                     }
                 }
                 return ParseDownloadParameterCommandList(commands);
