@@ -108,12 +108,20 @@ namespace THttpWebRequest
             }
             catch (WebException ex)
             {
-                using (var stream = ex.Response.GetResponseStream())
-                using (var reader = new StreamReader(stream))
+                if ((ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.Found )
                 {
-                    Console.WriteLine(reader.ReadToEnd());
+                    response = (HttpWebResponse)ex.Response;
+
                 }
-                throw;
+                else
+                {
+                    using (var stream = ex.Response.GetResponseStream())
+                    using (var reader = new StreamReader(stream))
+                    {
+                        Console.WriteLine(reader.ReadToEnd());
+                    }
+                    throw;
+                }
             }
 
             if (AutoRedirect == false)
