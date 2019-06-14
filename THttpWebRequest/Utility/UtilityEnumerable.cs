@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace THttpWebRequest.Utility
 {
@@ -7,8 +7,7 @@ namespace THttpWebRequest.Utility
     {
         public static string ToJsonString<T>(this IEnumerable<T> enumrable)
         {
-            var javaScriptSerializer = new JavaScriptSerializer();
-            return javaScriptSerializer.Serialize(enumrable);
+            return JsonConvert.SerializeObject(enumrable);
         }
     }
 }

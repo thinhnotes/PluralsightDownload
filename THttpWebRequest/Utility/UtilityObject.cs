@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Web.Script.Serialization;
 
 namespace THttpWebRequest.Utility
 {

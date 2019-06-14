@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THttpWebRequest
+namespace THttpWebRequest.Helper
 {
     internal class RandomHelper
     {
