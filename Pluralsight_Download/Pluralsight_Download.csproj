@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\THttpWebRequest\THttpWebRequest.csproj" />
   </ItemGroup>
 

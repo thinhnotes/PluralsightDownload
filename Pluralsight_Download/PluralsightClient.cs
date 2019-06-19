@@ -11,6 +11,7 @@ using THttpWebRequest;
 using THttpWebRequest.Utility;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace PluralSight_Download
 {
@@ -24,11 +25,23 @@ namespace PluralSight_Download
         public bool Login(string user, string pass)
         {
             var url = "https://app.pluralsight.com/id/";
-            var data = $"Username={HttpUtility.HtmlEncode(user)}&Password={HttpUtility.HtmlEncode(pass)}";
+            var requestVerificationToken = GetRequestVerificationToken();
+            var data = $"__RequestVerificationToken={requestVerificationToken}&Username={HttpUtility.HtmlEncode(user)}&Password={HttpUtility.HtmlEncode(pass)}";
             Referer = url;
             Post(url, data);
 
             return CookieCollection["PsJwt-production"] != null;
+        }
+
+        public string GetRequestVerificationToken()
+        {
+            var url = "https://app.pluralsight.com/id/";
+            var content = Get(url);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(content);
+
+            var selectSingleNode = htmlDocument.DocumentNode.SelectSingleNode("//*[@name='__RequestVerificationToken']");
+            return selectSingleNode?.Attributes["value"]?.Value;
         }
 
 
