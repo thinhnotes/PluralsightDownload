@@ -9,13 +9,13 @@ namespace THttpWebRequest.Helper
     {
         private static readonly Random r = new Random();
 
-        public static string GetRandomStringFrom(IEnumerable<string> s, int maxLengh)
+        public static string GetRandomStringFrom(IEnumerable<string> s, int maxLength)
         {
             int n = s.Count();
             string[] arr = s.ToArray();
             var sb = new StringBuilder();
 
-            while (sb.ToString().Length < maxLengh)
+            while (sb.ToString().Length < maxLength)
             {
                 sb.Append(arr[r.Next(n - 1)]);
             }
@@ -36,9 +36,9 @@ namespace THttpWebRequest.Helper
         }
 
 
-        public static string GetRandomStringFrom(string s, int maxLengh)
+        public static string GetRandomStringFrom(string s, int maxLength)
         {
-            return GetRandomStringFrom(s.ToCharArray().Select(c => c.ToString()), maxLengh);
+            return GetRandomStringFrom(s.ToCharArray().Select(c => c.ToString()), maxLength);
         }
     }
 }

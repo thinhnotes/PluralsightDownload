@@ -8,7 +8,7 @@ using THttpWebRequest.Utility;
 
 namespace THttpWebRequest
 {
-    public enum TypeRequest
+    public enum RequestType
     {
         Normal,
         Json
@@ -16,7 +16,7 @@ namespace THttpWebRequest
 
     public class TWebRequest
     {
-        private string _userAngent;
+        private string _userAgent;
 
         protected TWebRequest()
         {
@@ -55,16 +55,14 @@ namespace THttpWebRequest
         protected string Location { get; set; }
         protected string Referer { get; set; }
 
-        protected TypeRequest Type { get; set; }
+        protected RequestType RequestType { get; set; }
 
-        protected string UserAngent
+        protected string UserAgent
         {
-            get
-            {
-                return _userAngent ??
-                       "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36";
-            }
-            set { _userAngent = value; }
+            get =>
+                _userAgent ??
+                "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36";
+            set => _userAgent = value;
         }
 
         protected bool Gzip { get; set; }
@@ -77,14 +75,7 @@ namespace THttpWebRequest
             if (method.Equals("POST", StringComparison.OrdinalIgnoreCase))
             {
                 request.Method = "POST";
-                if (Type == TypeRequest.Normal)
-                {
-                    request.ContentType = "application/x-www-form-urlencoded";
-                }
-                else
-                {
-                    request.ContentType = "application/json";
-                }
+                request.ContentType = RequestType == RequestType.Normal ? "application/x-www-form-urlencoded" : "application/json";
                 if (postData != null)
                 {
                     byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -108,7 +99,7 @@ namespace THttpWebRequest
             }
             catch (WebException ex)
             {
-                if ((ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.Found )
+                if (((HttpWebResponse) ex.Response).StatusCode == HttpStatusCode.Found )
                 {
                     response = (HttpWebResponse)ex.Response;
 
@@ -116,7 +107,7 @@ namespace THttpWebRequest
                 else
                 {
                     using (var stream = ex.Response.GetResponseStream())
-                    using (var reader = new StreamReader(stream))
+                    using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
                     {
                         Console.WriteLine(reader.ReadToEnd());
                     }
@@ -154,17 +145,17 @@ namespace THttpWebRequest
             return GetContent(url);
         }
 
-        protected string Post(string url, string data, TypeRequest type = TypeRequest.Normal, bool autoRedirect = false)
+        protected string Post(string url, string data, RequestType requestType = RequestType.Normal, bool autoRedirect = false)
         {
             AutoRedirect = autoRedirect;
-            Type = type;
+            RequestType = requestType;
             return GetContent(url, data, "POST");
         }
 
         public string Post(string url, params KeyValuePair<string, string>[] data)
         {
-            string dataOuput = data.Aggregate("123", (current, keyValuePair) => current + string.Format("{0}={1}", keyValuePair.Key, keyValuePair.Value));
-            return Post(url, dataOuput);
+            string dataOutput = data.Aggregate("", (current, keyValuePair) => current + $"{keyValuePair.Key}={keyValuePair.Value}");
+            return Post(url, dataOutput);
         }
 
         private HttpWebRequest InitRequest()
@@ -176,7 +167,7 @@ namespace THttpWebRequest
             request.CookieContainer = new CookieContainer();
             if (CookieCollection != null)
                 request.CookieContainer.Add(CookieCollection);
-            if (Type == TypeRequest.Json)
+            if (RequestType == RequestType.Json)
             {
                 request.Headers.Add("X-Requested-With", "XMLHttpRequest");
             }
@@ -189,7 +180,7 @@ namespace THttpWebRequest
             request.Headers.Add(HttpRequestHeader.AcceptLanguage, "en,vi;q=0.8,en-US;q=0.6");
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             request.Referer = Referer;
-            request.UserAgent = UserAngent;
+            request.UserAgent = UserAgent;
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate |
                                              DecompressionMethods.None;
         }

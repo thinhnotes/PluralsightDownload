@@ -9,8 +9,6 @@ using Newtonsoft.Json.Linq;
 using Pluralsight_Download.Entity;
 using THttpWebRequest;
 using THttpWebRequest.Utility;
-using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace PluralSight_Download
@@ -45,15 +43,15 @@ namespace PluralSight_Download
         }
 
 
-        public string DownLoad(string urldownload)
+        public string DownLoad(string urlDownload)
         {
-            var uri = new Uri(urldownload);
-            string url = "https://app.pluralsight.com/video/clips/viewclip";
+            var uri = new Uri(urlDownload);
+            var url = "https://app.pluralsight.com/video/clips/viewclip";
             var moduleName = HttpUtility.ParseQueryString(uri.Query).Get("name");
             object data = new
             {
                 author = HttpUtility.ParseQueryString(uri.Query).Get("author"),
-                moduleName = moduleName,
+                moduleName,
                 courseName = HttpUtility.ParseQueryString(uri.Query).Get("course"),
                 clipIndex = int.Parse(HttpUtility.ParseQueryString(uri.Query).Get("clip") ?? "0"),
                 mediaType = ConfigValue.FileType,
@@ -61,10 +59,11 @@ namespace PluralSight_Download
                 includeCaptions = ConfigValue.Cap,
                 locale = ConfigValue.Localize
             };
-            Referer = urldownload;
-            var downLoad = Post(url, data.ToJsonString(), TypeRequest.Json);
+
+            Referer = urlDownload;
+            var downLoad = Post(url, data.ToJsonString(), RequestType.Json);
             var jObject = JsonConvert.DeserializeObject<JObject>(downLoad);
-            if(jObject!=null && jObject["urls"]!=null)
+            if(jObject?["urls"] != null)
             {
                 var urls = JsonConvert.DeserializeObject<List<LinkDownload>>(jObject["urls"].ToString());
                 return urls.FirstOrDefault()?.Url;
@@ -74,33 +73,31 @@ namespace PluralSight_Download
 
         public void DownLoadFile(string url, string path, string fileName)
         {
-            using (var webClient = new WebClient())
+            using var webClient = new WebClient();
+            var fileSizeFromUrl = GetFileSizeFromUrl(webClient, url);
+
+            CreateIfNotExitDirectory(path);
+            var combine = PathCombine(path, CleanFileName(fileName));
+
+            if (!CheckFileDownloaded(combine, fileSizeFromUrl, url))
             {
-                var fileSizeFromUrl = GetFileSizeFromUrl(webClient, url);
+                var progress = new ProgressBar();
 
-                CreateIfNotExitDirectory(path);
-                var combine = PathCombine(path, CleanFileName(fileName));
-
-                if (!CheckFileIsDonloaded(combine, fileSizeFromUrl, url))
+                webClient.DownloadProgressChanged += (sender, args) =>
                 {
-                    var progress = new ProgressBar();
+                    progress.Report((double)args.BytesReceived / args.TotalBytesToReceive);
+                };
 
-                    webClient.DownloadProgressChanged += (sender, args) =>
-                    {
-                        progress.Report((double)args.BytesReceived / args.TotalBytesToReceive);
-                    };
+                webClient.DownloadFileCompleted += (sender, args) =>
+                {
+                    progress.Dispose();
+                };
 
-                    webClient.DownloadFileCompleted += (sender, args) =>
-                    {
-                        progress.Dispose();
-                    };
-
-                    webClient.DownloadFileTaskAsync(new Uri(url), combine).Wait();
-                }
+                webClient.DownloadFileTaskAsync(new Uri(url), combine).Wait();
             }
         }
 
-        public bool CheckFileIsDonloaded(string fileLocation, Int64 bytesTotal, string urlFile)
+        public bool CheckFileDownloaded(string fileLocation, Int64 bytesTotal, string urlFile)
         {
             if (!File.Exists(fileLocation)) return false;
             

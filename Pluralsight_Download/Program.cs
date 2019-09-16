@@ -12,7 +12,6 @@ namespace PluralSight_Download
     {
         private static readonly string commandCharacter = "--";
         private static readonly string defaultFolderDownload = "Download";
-        public static readonly Dictionary<string, string> Command = new Dictionary<string, string>();
 
         static void Main(string[] args)
         {
@@ -46,10 +45,10 @@ namespace PluralSight_Download
                 return ParseDownloadParameterCommandList(commands);
             }
             else
-                return ParseDownloadParameterFromNonamlize(strings);
+                return ParseDownloadParameterFromNominalize(strings);
         }
 
-        public static DownloadParameter ParseDownloadParameterFromNonamlize(List<string> strings)
+        public static DownloadParameter ParseDownloadParameterFromNominalize(List<string> strings)
         {
             var result = new DownloadParameter()
             {
@@ -87,31 +86,31 @@ namespace PluralSight_Download
             return result;
         }
 
-        public static int DisplayConsole(List<string> commandlinestring, out DownloadParameter parameter)
+        public static int DisplayConsole(List<string> commandLinesStrings, out DownloadParameter parameter)
         {
-            if (commandlinestring.Count == 1 || commandlinestring.Any(x => x.StartsWith(commandCharacter + "help")))
+            if (commandLinesStrings.Count == 1 || commandLinesStrings.Any(x => x.StartsWith(commandCharacter + "help")))
             {
                 parameter = new DownloadParameter();
                 DisplayHelpConsole();
                 return -1;
             }
-            parameter = ParseDownloadParameter(commandlinestring);
+            parameter = ParseDownloadParameter(commandLinesStrings);
             if (string.IsNullOrWhiteSpace(parameter.UserName))
             {
                 parameter = new DownloadParameter();
-                Console.WriteLine("The UserName can not be empy!");
+                Console.WriteLine("The UserName can not be empty!");
                 return -1;
             }
             if (string.IsNullOrWhiteSpace(parameter.Password))
             {
                 parameter = new DownloadParameter();
-                Console.WriteLine("The PassWord can not be empy!");
+                Console.WriteLine("The PassWord can not be empty!");
                 return -1;
             }
             if (string.IsNullOrWhiteSpace(parameter.Link))
             {
                 parameter = new DownloadParameter();
-                Console.WriteLine("The Link Download can not be empy!");
+                Console.WriteLine("The Link Download can not be empty!");
                 return -1;
             }
             return 0;
