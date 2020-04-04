@@ -5,13 +5,10 @@ namespace Pluralsight_Download.Entity
 {
     public class ConfigValue
     {
-        public static string PathDirectory = "D:\\test";
         public static string FileType = "mp4";
         public static string Quality = "1024x768";
         public static bool Cap = false;
         public static string Localize = "en";
-        public static string UserName { get; set; }
-        public static string Password { get; set; }
     }
 
     public class Course
@@ -52,6 +49,19 @@ namespace Pluralsight_Download.Entity
         public string Title { get; set; }
         public string Duration { get; set; }
         public string PlayerUrl { get; set; }
+        public Uri DownloadUrl
+        {
+            get
+            {
+                if (!Uri.TryCreate(PlayerUrl, UriKind.Absolute, out var urlDownload))
+                {
+                    return new Uri(Constant.SiteApp, PlayerUrl);
+                }
+                return new Uri(PlayerUrl);
+            }
+        }
+
+
     }
 
     public enum Level

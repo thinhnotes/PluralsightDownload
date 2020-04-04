@@ -10,6 +10,7 @@ using Pluralsight_Download.Entity;
 using THttpWebRequest;
 using THttpWebRequest.Utility;
 using HtmlAgilityPack;
+using Pluralsight_Download;
 
 namespace PluralSight_Download
 {
@@ -22,9 +23,9 @@ namespace PluralSight_Download
 
         public bool Login(string user, string pass)
         {
-            var url = "https://app.pluralsight.com/id/";
+            var url = $"{Constant.SiteApp}id/";
             var requestVerificationToken = GetRequestVerificationToken();
-            var data = $"__RequestVerificationToken={requestVerificationToken}&Username={HttpUtility.HtmlEncode(user)}&Password={HttpUtility.HtmlEncode(pass)}";
+            var data = $"{Constant.RequestVerificationToken}={requestVerificationToken}&Username={HttpUtility.HtmlEncode(user)}&Password={HttpUtility.HtmlEncode(pass)}";
             Referer = url;
             Post(url, data);
 
@@ -33,12 +34,15 @@ namespace PluralSight_Download
 
         public string GetRequestVerificationToken()
         {
-            var url = "https://app.pluralsight.com/id/";
+            var url = $"{Constant.SiteApp}id/";
+
+            CookieCollection.Add(new Cookie("cf_clearance", "e629d1272d9264d0002e8bc7f03b78a53c7ea4bc-1585986526-0-250", "/", $".{Constant.Host}"));
+
             var content = Get(url);
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(content);
 
-            var selectSingleNode = htmlDocument.DocumentNode.SelectSingleNode("//*[@name='__RequestVerificationToken']");
+            var selectSingleNode = htmlDocument.DocumentNode.SelectSingleNode($"//*[@name='{Constant.RequestVerificationToken}']");
             return selectSingleNode?.Attributes["value"]?.Value;
         }
 
@@ -46,7 +50,7 @@ namespace PluralSight_Download
         public string DownLoad(string urlDownload)
         {
             var uri = new Uri(urlDownload);
-            var url = "https://app.pluralsight.com/video/clips/viewclip";
+            var url = $"{Constant.SiteApp}video/clips/viewclip";
             var moduleName = HttpUtility.ParseQueryString(uri.Query).Get("name");
             object data = new
             {
@@ -63,7 +67,7 @@ namespace PluralSight_Download
             Referer = urlDownload;
             var downLoad = Post(url, data.ToJsonString(), RequestType.Json);
             var jObject = JsonConvert.DeserializeObject<JObject>(downLoad);
-            if(jObject?["urls"] != null)
+            if (jObject?["urls"] != null)
             {
                 var urls = JsonConvert.DeserializeObject<List<LinkDownload>>(jObject["urls"].ToString());
                 return urls.FirstOrDefault()?.Url;
@@ -100,7 +104,7 @@ namespace PluralSight_Download
         public bool CheckFileDownloaded(string fileLocation, Int64 bytesTotal, string urlFile)
         {
             if (!File.Exists(fileLocation)) return false;
-            
+
             if (new FileInfo(fileLocation).Length == bytesTotal)
                 return true;
             return false;
@@ -120,18 +124,16 @@ namespace PluralSight_Download
             foreach (var module in course.Modules)
             {
                 i++;
-                var modulePath = PathCombine(path, $"{i}. {CleanFileName(module.Title)}");
+                var moduleName = $"{i}. {CleanFileName(module.Title)}";
+                var modulePath = PathCombine(path, moduleName);
                 CreateIfNotExitDirectory(modulePath);
+                Console.WriteLine(moduleName);
                 int j = 0;
                 foreach (var clip in module.Clips)
                 {
                     j++;
-                    Console.WriteLine(clip.Title);
-                    if (!clip.PlayerUrl.StartsWith("http"))
-                    {
-                        clip.PlayerUrl = "https://app.pluralsight.com" + clip.PlayerUrl;
-                    }
-                    var downLoadLink = DownLoad(clip.PlayerUrl);
+                    Console.WriteLine($"--{clip.Title}");
+                    var downLoadLink = DownLoad(clip.DownloadUrl.ToString());
                     DownLoadFile(downLoadLink, modulePath, $"{j}. {clip.Title}.{ConfigValue.FileType}");
                 }
             }
