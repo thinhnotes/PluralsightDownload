@@ -1,6 +1,10 @@
 name: .NET Core
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -8,10 +12,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+        dotnet-version: 3.1.101
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Action Release
+      uses: thinhnotes/PluralsightDownload@v1.0.0
+      with:
+        # File to upload to the release
+        file: ./Pluralsight_Download/bin/Release/netcoreapp3.0/Pluralsight_Download.exe
+        # Path to changelog file
+        changelogs: update release 1.0.0
