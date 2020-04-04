@@ -29,6 +29,6 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: release.zip
         asset_name: release.zip
-        tag: PluralsightDownload 1.0.0
+        tag: PluralsightDownload-1.0.0
         overwrite: true
 
