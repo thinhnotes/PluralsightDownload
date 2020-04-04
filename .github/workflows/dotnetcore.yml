@@ -21,10 +21,4 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    - name: Action Release
-      uses: thinhnotes/PluralsightDownload@v1.0.0
-      with:
-        # File to upload to the release
-        file: ./Pluralsight_Download/bin/Release/netcoreapp3.0/Pluralsight_Download.exe
-        # Path to changelog file
-        changelogs: update release 1.0.0
+
