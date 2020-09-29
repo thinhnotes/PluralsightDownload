@@ -21,8 +21,10 @@ jobs:
       run: dotnet restore
     - name: Install dotnet tools 
       run: dotnet tool install --global dotnet-sonarscanner
-    - name: Start sonar scaner  
-      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.AWS_ACCESS_KEY_ID }}" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
+    - name: Start sonar scaner
+      env:
+        SONAR_SECRET: ${{ secrets.SuperSecret }}
+      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$SONAR_SECRET" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
     - name: Build
       run: dotnet build --configuration Release --no-restore -o release
     - name: Build
