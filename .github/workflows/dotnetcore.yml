@@ -24,11 +24,11 @@ jobs:
     - name: Start sonar scaner
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /o:"thinhnotes" /d:sonar.login="f310e68f641f6e3346c082e2483de43d3fe33d0e" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
+      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /o:"thinhnotes" /d:sonar.login="$SONAR_SECRET" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
     - name: Build
       run: dotnet build --configuration Release --no-restore -o release
     - name: Build
-      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.AWS_ACCESS_KEY_ID }}"      
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_SECRET }}"      
     - name: Zip Folder
       run: zip -r release.zip release
     - name: Upload binaries to release
