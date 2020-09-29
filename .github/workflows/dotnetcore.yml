@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Install dotnet tools 
-      run: dotnet tool install --global dotnet-sonarscanner --version 4.3.1
+      run: dotnet tool install --global dotnet-sonarscanner
     - name: Start sonar scaner
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
