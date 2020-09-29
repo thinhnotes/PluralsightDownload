@@ -19,8 +19,14 @@ jobs:
         dotnet-version: 3.1.101
     - name: Install dependencies
       run: dotnet restore
+    - name: Install dotnet tools 
+      run: dotnet tool install --global dotnet-sonarscanner
+    - name: Start sonar scaner  
+      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.AWS_ACCESS_KEY_ID }}" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
     - name: Build
       run: dotnet build --configuration Release --no-restore -o release
+    - name: Build
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.AWS_ACCESS_KEY_ID }}"      
     - name: Zip Folder
       run: zip -r release.zip release
     - name: Upload binaries to release
