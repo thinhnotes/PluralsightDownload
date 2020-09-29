@@ -1,5 +1,5 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thinhnotes_PluralsightDownload&metric=alert_status)](https://sonarcloud.io/dashboard?id=thinhnotes_PluralsightDownload)
-[![Build Status](https://img.shields.io/github/workflow/status/thinhnotes/thinhnotes_PluralsightDownload/build?label=build&logo=github)](https://github.com/mc1arke/thinhnotes_PluralsightDownload?workflow=build)
+[![Build Status](https://img.shields.io/github/workflow/status/thinhnotes/PluralsightDownload/build?label=build&logo=github)](https://github.com/thinhnotes/PluralsightDownload?workflow=build)
 
 # PluralsightDownload
 Add course from Pluralsight
