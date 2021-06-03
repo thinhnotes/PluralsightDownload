@@ -2,15 +2,15 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+    - feature/add-semantic-realease
   pull_request:
-    branches: [ master ]
+    branches: 
+    - master
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -32,13 +32,12 @@ jobs:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
       run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: 12
     - name: Install dependencies
-      run: npm install --save-dev semantic-release -D
+      run: npm install
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
+      run: npx semantic-release --publish @semantic-release/github --verify-conditions @semantic-release/github
