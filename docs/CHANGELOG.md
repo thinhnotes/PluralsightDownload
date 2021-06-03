@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.0...v1.0.1) (2021-06-03)
+
+
+### Bug Fixes
+
+* update git action ([7c0f366](https://github.com/thinhnotes/PluralsightDownload/commit/7c0f366a2eadb9b77689d0e7f2295ac52d83db1b))
+
 # 1.0.0 (2021-06-03)
 
 
