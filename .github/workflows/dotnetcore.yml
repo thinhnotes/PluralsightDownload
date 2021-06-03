@@ -14,27 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Install dotnet tools 
-      run: dotnet tool install --global dotnet-sonarscanner
-    - name: Start sonar scaner
-      env:
-        SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /o:"thinhnotes" /d:sonar.login="$SONAR_SECRET" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
-    - name: Build
-      run: dotnet build --configuration Release --no-restore -o release
-    - name: End sonar scaner
-      env:
-        SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
-      run: npm install @semantic-release/changelog -D
+      run: npm install @semantic-release/changelog -D && npm install @semantic-release/git -D
     - name: Release
       # You may pin to the exact commit or the version.
       # uses: brpaz/action-semantic-release@978dcc77b36b45f08f55e8deaee1666585bba193
