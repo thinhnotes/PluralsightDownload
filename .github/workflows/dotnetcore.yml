@@ -32,10 +32,11 @@ jobs:
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
       run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"  
-    - uses: papeloto/action-zip@v1
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
       with:
-        files: release/*
-        dest: release.zip
+        filename: 'release.zip'
+        directory: 'release'
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
       run: npm install @semantic-release/changelog @semantic-release/git -D
