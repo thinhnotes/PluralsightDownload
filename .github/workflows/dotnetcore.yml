@@ -9,10 +9,23 @@ on:
     - master
 
 jobs:
-  build:
-
+  
+  release:
     runs-on: ubuntu-latest
+    steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install dependencies
+      run: ls -an && npm ci
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release
 
+  build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -33,13 +46,3 @@ jobs:
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
       run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
-    - name: Install dependencies
-      run: npm ci
-    - name: Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npx semantic-release
