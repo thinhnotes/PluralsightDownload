@@ -23,7 +23,7 @@ jobs:
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npx semantic-release
+      run: --publish @semantic-release/github --verify-conditions @semantic-release/github
 
 
     - name: Setup .NET Core
