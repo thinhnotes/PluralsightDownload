@@ -34,7 +34,7 @@ jobs:
       run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"    
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
-      run: npm install @semantic-release/changelog -D && npm install @semantic-release/git -D
+      run: ls -an && npm install @semantic-release/changelog @semantic-release/git -D
     - name: Release
       run: npx semantic-release
       env:
