@@ -16,7 +16,7 @@
 		],
 		["@semantic-release/github", {
 	      		"assets": [
-		      		{"path": "release.zip", "label": "version: ${nextRelease.version}"}
+		      		{"path": "release/release.zip", "label": "version: ${nextRelease.version}"}
 		    	]
 	      	}],
 	]
