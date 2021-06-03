@@ -3,4 +3,4 @@
 
 ### Bug Fixes
 
-* update plugins ([8087c18](https://github.com/thinhnotes/PluralsightDownload/commit/8087c18f9d98641573dc721f294e1bb144200b37))
+* add semantic release ([8087c18](https://github.com/thinhnotes/PluralsightDownload/commit/8087c18f9d98641573dc721f294e1bb144200b37))
