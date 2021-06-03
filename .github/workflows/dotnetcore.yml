@@ -3,7 +3,7 @@ name: .NET Core
 on:
   push:
     branches: 
-    - feature/add-semantic-realease
+    - master
   pull_request:
     branches: 
     - master
