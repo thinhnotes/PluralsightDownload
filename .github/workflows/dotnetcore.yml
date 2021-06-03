@@ -31,11 +31,15 @@ jobs:
     - name: End sonar scaner
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"    
+      run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"  
+    - uses: papeloto/action-zip@v1
+      with:
+        files: release/*
+        dest: release.zip
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
       run: ls -an && npm install @semantic-release/changelog @semantic-release/git -D
     - name: Release
       run: npx semantic-release
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
