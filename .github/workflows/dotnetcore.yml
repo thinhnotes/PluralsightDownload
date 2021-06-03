@@ -30,15 +30,11 @@ jobs:
     - name: End sonar scaner
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"      
-    - name: Zip Folder
-      run: zip -r release.zip release
-    - name: Upload binaries to release
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: release.zip
-        asset_name: release.zip
-        tag: PluralsightDownload-1.0.0
-        overwrite: true
-
+      run: dotnet sonarscanner end /d:sonar.login="$SONAR_SECRET"
+    - name: Install dependencies
+      run: npm ci
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
