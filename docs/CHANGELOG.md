@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.4...v1.0.5) (2021-06-03)
+
+
+### Bug Fixes
+
+* update asset file ([f95bb42](https://github.com/thinhnotes/PluralsightDownload/commit/f95bb421689873df05a99127f0028ff51a69c526))
+
 ## [1.0.4](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.3...v1.0.4) (2021-06-03)
 
 
