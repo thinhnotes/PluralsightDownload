@@ -39,7 +39,7 @@ jobs:
         directory: 'release'
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
-      run: ls -an && npm install @semantic-release/changelog @semantic-release/git -D
+      run: cd release && ls -an && npm install @semantic-release/changelog @semantic-release/git -D
     - name: Release
       run: npx semantic-release
       env:
