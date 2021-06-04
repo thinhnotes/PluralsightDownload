@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.1...v1.0.2) (2021-06-04)
+
+
+### Bug Fixes
+
+* fix format yaml file git hub action ([e30ada9](https://github.com/thinhnotes/PluralsightDownload/commit/e30ada935b32f37478bce3753512ab8f00d055b2))
+* update github action ([b6095e5](https://github.com/thinhnotes/PluralsightDownload/commit/b6095e5a036045567a8dac4855a42ed9291c6620))
+
 ## [1.0.1](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.0...v1.0.1) (2021-06-03)
 
 
