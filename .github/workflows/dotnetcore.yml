@@ -37,6 +37,13 @@ jobs:
       with:
         filename: 'release.zip'
         directory: 'release'
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: release
+        path: |
+            release.zip
+            .releaserc
       
   release:
     runs-on: ubuntu-latest
