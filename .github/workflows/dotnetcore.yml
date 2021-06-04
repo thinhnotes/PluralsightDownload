@@ -50,6 +50,10 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.0.9
+      with:
+        name: release
     - uses: actions/setup-node@v2
     - name: Install Semantic Releaser
       run: ls -an && npm install @semantic-release/changelog @semantic-release/git -D
