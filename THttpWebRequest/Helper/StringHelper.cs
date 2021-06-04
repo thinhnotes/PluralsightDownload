@@ -4,7 +4,7 @@ using THttpWebRequest.Utility;
 
 namespace THttpWebRequest.Helper
 {
-    public class StringHelper
+    public static class StringHelper
     {
         /// <summary>
         ///     lấy username dạng viêt tắt của tên họ
