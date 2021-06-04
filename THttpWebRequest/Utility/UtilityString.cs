@@ -13,7 +13,6 @@ namespace THttpWebRequest.Utility
             return new Uri(baseUri, url).OriginalString;
         }
 
-        //xxx
         public static bool TestWildcard(this string s, string name)
         {
             return false;
@@ -26,15 +25,15 @@ namespace THttpWebRequest.Utility
 
         public static string SubStringSpaceLengh(this string str, int lenght)
         {
+            var builder = new StringBuilder();
             string[] strings = str.Split(' ');
-            string resuft = "";
             foreach (string s in strings)
             {
-                if (resuft.Length > lenght)
+                if (builder.Length > lenght)
                     break;
-                resuft += s + " ";
+                builder.Append(s);
             }
-            return resuft;
+            return builder.ToString();
         }
 
         /// <summary>

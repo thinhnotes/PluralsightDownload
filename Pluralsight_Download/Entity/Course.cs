@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Pluralsight_Download.Entity
 {
-    public class ConfigValue
+    public static class ConfigValue
     {
-        public static string FileType = "mp4";
-        public static string Quality = "1024x768";
-        public static bool Cap = false;
-        public static string Localize = "en";
+        public static readonly string FileType = "mp4";
+        public static readonly string Quality = "1024x768";
+        public static readonly bool Cap = false;
+        public static readonly string Localize = "en";
     }
 
     public class Course

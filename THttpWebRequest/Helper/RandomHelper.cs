@@ -5,7 +5,7 @@ using System.Text;
 
 namespace THttpWebRequest.Helper
 {
-    internal class RandomHelper
+    public static class RandomHelper
     {
         private static readonly Random r = new Random();
 

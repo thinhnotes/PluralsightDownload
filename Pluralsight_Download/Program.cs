@@ -8,7 +8,7 @@ using THttpWebRequest.Utility;
 
 namespace PluralSight_Download
 {
-    class Program
+    static class Program
     {
         private static readonly string commandCharacter = "--";
         private static readonly string defaultFolderDownload = "Download";
