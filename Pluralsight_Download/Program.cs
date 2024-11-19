@@ -118,7 +118,7 @@ namespace PluralSight_Download
 
         public static void DisplayHelpConsole()
         {
-            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            string codeBase = Assembly.GetExecutingAssembly().Location;
             string name = Path.GetFileName(codeBase);
             Console.WriteLine($"you can used download by order {name} [Username] [Password] [Link] [DownloadFolder]");
             Console.WriteLine("--UserName [UserName] for set user name param [required]");
