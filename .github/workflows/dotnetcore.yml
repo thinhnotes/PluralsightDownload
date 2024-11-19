@@ -50,10 +50,16 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@v4
+    - uses: actions/checkout@v2        
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: release
+    - uses: actions/setup-node@v2
+    - name: Install Semantic Releaser
+      run: ls -an && npm install @semantic-release/changelog @semantic-release/git -D
+    - name: Release
+      run: npx semantic-release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
