@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.2...v1.1.0) (2024-11-19)
+
+
+### Features
+
+* **pencil:** upgrade to .net 8 ([93d877c](https://github.com/thinhnotes/PluralsightDownload/commit/93d877ca87c0e449ea6ef8d9ae1a51a709538226))
+
 ## [1.0.2](https://github.com/thinhnotes/PluralsightDownload/compare/v1.0.1...v1.0.2) (2021-06-04)
 
 
