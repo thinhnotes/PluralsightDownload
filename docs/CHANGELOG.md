@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/thinhnotes/PluralsightDownload/compare/v1.1.2...v1.1.3) (2024-11-19)
+
+
+### Bug Fixes
+
+* remove pdb file in release ([27f210d](https://github.com/thinhnotes/PluralsightDownload/commit/27f210d6d6d6a4d4010a1fc3730e4acb049fe77c))
+
 ## [1.1.2](https://github.com/thinhnotes/PluralsightDownload/compare/v1.1.1...v1.1.2) (2024-11-19)
 
 
