@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/thinhnotes/PluralsightDownload/compare/v1.1.1...v1.1.2) (2024-11-19)
+
+
+### Bug Fixes
+
+* fix publish one file ([22ce202](https://github.com/thinhnotes/PluralsightDownload/commit/22ce2027d18247cd79e441fa1d3b9e420ac6add1))
+
 ## [1.1.1](https://github.com/thinhnotes/PluralsightDownload/compare/v1.1.0...v1.1.1) (2024-11-19)
 
 
