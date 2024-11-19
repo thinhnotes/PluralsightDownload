@@ -27,7 +27,7 @@ jobs:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
       run: dotnet sonarscanner begin /k:"thinhnotes_PluralsightDownload" /d:sonar.host.url="https://sonarcloud.io" /o:"thinhnotes" /d:sonar.login="$SONAR_SECRET" /d:sonar.branch.name="${GITHUB_REF#refs/heads/}"
     - name: Build
-      run: dotnet publish --configuration Release -o release
+      run: dotnet publish /p:DebugType=None /p:DebugSymbols=false --self-contained --configuration Release -o release
     - name: End sonar scaner
       env:
         SONAR_SECRET: ${{ secrets.SONAR_TOKEN }}
