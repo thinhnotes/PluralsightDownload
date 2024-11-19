@@ -13,11 +13,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 8.0.404
     - name: Install dependencies
       run: dotnet restore
     - name: Install dotnet tools 
@@ -38,7 +38,7 @@ jobs:
         filename: 'release.zip'
         directory: 'release'
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.3
+      uses: actions/upload-artifact@v4
       with:
         name: release
         path: |
