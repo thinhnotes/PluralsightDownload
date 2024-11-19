@@ -77,6 +77,7 @@ namespace PluralSight_Download
 
         public void DownLoadFile(string url, string path, string fileName)
         {
+            //TODO: it should be change to HttpClient
             using var webClient = new WebClient();
             var fileSizeFromUrl = GetFileSizeFromUrl(webClient, url);
 
